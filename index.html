@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Controle Sol</title>
+<style>
+body { font-family: Arial; background:#e8f5e9; padding:15px; }
+h1 { text-align:center; color:#1b5e20; }
+.card { background:#fff; padding:15px; border-radius:10px; margin-bottom:15px; }
+input, button { padding:10px; margin:5px 0; width:100%; }
+button { background:#2e7d32; color:white; border:none; border-radius:5px; }
+.alert { color:red; font-weight:bold; }
+</style>
+</head>
+<body>
+
+<h1>🌞 Controle Sol</h1>
+
+<div class="card">
+<h3>Salário</h3>
+<input id="salario" type="number">
+</div>
+
+<div class="card">
+<h3>Parcelado</h3>
+<input id="descP" placeholder="Descrição">
+<input id="valorP" type="number" placeholder="Valor">
+<input id="restanteP" type="number" placeholder="Parcelas restantes">
+<button onclick="addParcela()">Adicionar</button>
+</div>
+
+<div class="card">
+<h3>À vista</h3>
+<input id="descV" placeholder="Descrição">
+<input id="valorV" type="number" placeholder="Valor">
+<button onclick="addVista()">Adicionar</button>
+</div>
+
+<div class="card">
+<h3>Alertas</h3>
+<div id="alertas"></div>
+</div>
+
+<div class="card">
+<h3>Resumo</h3>
+<p id="gastos"></p>
+<p id="saldo"></p>
+</div>
+
+<script>
+let parcelas = [];
+let avista = [];
+
+function addParcela(){
+  const desc = document.getElementById('descP').value;
+  const valor = Number(document.getElementById('valorP').value);
+  const restante = Number(document.getElementById('restanteP').value);
+
+  parcelas.push({desc, valor, restante});
+  atualizar();
+}
+
+function addVista(){
+  const desc = document.getElementById('descV').value;
+  const valor = Number(document.getElementById('valorV').value);
+
+  avista.push({desc, valor});
+  atualizar();
+}
+
+function atualizar(){
+  const salario = Number(document.getElementById('salario').value);
+  const totalP = parcelas.reduce((a,b)=>a+b.valor,0);
+  const totalV = avista.reduce((a,b)=>a+b.valor,0);
+  const total = totalP + totalV;
+  const saldo = salario - total;
+
+  document.getElementById('gastos').innerText = "Gastos: R$ " + total;
+  document.getElementById('saldo').innerText = "Saldo: R$ " + saldo;
+
+  let alertHTML = "";
+  parcelas.forEach(p=>{
+    if(p.restante <= 2){
+      alertHTML += "<p class='alert'>⚠️ " + p.desc + " acabando</p>";
+    }
+  });
+  document.getElementById('alertas').innerHTML = alertHTML;
+}
+</script>
+
+</body>
+</html>
